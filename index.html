@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8">
+    <title>くまがいのWebページ</title>
+    <style>
+      body {
+        background-color: #f7f7f7;
+        font-family: Arial, sans-serif;
+        color: #333;
+        padding: 20px;
+      }
+
+      
+  h1 {
+    text-align: center;
+    background-color: #d0eaff;
+    padding: 10px;
+    border-radius: 10px;
+  }
+
+  .container {
+  display: flex;
+  gap: 20px;
+}
+
+.left, .right {
+  padding: 20px;
+  background-color: #e0f7fa;
+  border: 1px solid #ccc;
+  flex: 1; /* 幅を均等に分ける */
+}
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.profile-photo {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #aaa;
+}
+
+.profile-text {
+  font-size: 1.1em;
+  line-height: 1.6;
+}
+
+
+</style>
+
+
+  </head>
+  <body>
+    <h1>くまがいのWebページへようこそ！</h1>
+    <p>これは、はじめて作ったHTMLです。</p>
+    <h2>私の好きな風景</h2>
+    <img src="https://source.unsplash.com/400x300/?nature" alt="自然の風景">
+    <p>この写真は自然のイメージです。</p>
+    
+    <h2>おすすめサイト</h2>
+    <p><a href="https://www.google.com" target="_blank">Googleで検索</a></p>
+    
+    <h2>2カラムレイアウト</h2>
+<div class="container">
+  <div class="left">
+
+    <h2>プロフィール</h2>
+<div class="profile">
+  <img src="C:\Users\karad\OneDrive\Documents\sign-no-tagline-bg-fff-1500x1500.jpg" alt="くまがいの写真" class="profile-photo">
+  <div class="profile-text">
+    <p>こんにちは、くまがいです。</p>
+    <p>理学療法士として活動しながら、プログラミングにも挑戦中です！<br>
+       地域や健康、笑顔をつなぐサービスづくりを目指しています。</p>
+  </div>
+</div>
+
+
+  </div>
+  <div class="right">右側の内容</div>
+</div>
+
+    
+  </body>
+</html>
