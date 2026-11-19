@@ -92,6 +92,7 @@
   .fig svg { width: 100%; height: auto; display: block; }
   .fig img.photo { display: none; width: 100%; aspect-ratio: 280 / 328; object-fit: cover; border-radius: 2mm; }
   .fig.has-photo img.photo { display: block; }
+  .page.wide .fig img.photo { aspect-ratio: 326 / 252; }
   .fig.has-photo svg { display: none; }
   .between { text-align: center; color: var(--accent); font-size: 30pt; font-weight: 700; }
 
@@ -156,14 +157,18 @@
    start / end … イラストの姿勢（下の「人の絵の描き方」参照）
 
    ★写真に差し替えるとき
-   photos フォルダに「ページ番号_start.jpg」「ページ番号_end.jpg」を入れるだけで、
+   photos フォルダに「id_start.jpg」「id_end.jpg」を入れるだけで、
    イラストの代わりに写真が表示されます（.png でも可）。
-   例）1ページ目 → photos/01_start.jpg と photos/01_end.jpg
+   例）お尻上げ体操（id: "bridge"）→ photos/bridge_start.jpg と photos/bridge_end.jpg
+
+   ★一部のページだけ印刷するとき
+   index.html?ids=bridge,bridge-leg のように id を並べて開きます。
    ===================================================================== */
 const FACILITY = "";   // 例: "○○デイサービス"（空欄なら表示しません）
 
 const EXERCISES = [
   {
+    id: "knee-ext",
     title: "ひざ伸ばし体操",
     purpose: "太ももの前の筋肉をきたえ、立つ・歩く力をつけます",
     steps: [
@@ -183,6 +188,7 @@ const EXERCISES = [
              arrow: "M 186 238 Q 236 232 246 196" }
   },
   {
+    id: "thigh-up",
     title: "もも上げ体操",
     purpose: "足を持ち上げる力をつけ、つまずきを防ぎます",
     steps: [
@@ -202,6 +208,7 @@ const EXERCISES = [
              arrow: "M 214 236 Q 224 190 206 152" }
   },
   {
+    id: "sit-stand",
     title: "立ち上がり体操",
     purpose: "足腰の力をつけ、いすやトイレからの立ち上がりを楽にします",
     steps: [
@@ -221,6 +228,7 @@ const EXERCISES = [
              arrow: "M 236 150 L 236 40" }
   },
   {
+    id: "heel-raise",
     title: "かかと上げ体操",
     purpose: "ふくらはぎをきたえ、歩く力とバランス力をつけます",
     steps: [
@@ -237,6 +245,43 @@ const EXERCISES = [
     start: { pose: "standHold", moving: ["feet"] },
     end:   { pose: "standHoldUp", moving: ["feet"],
              arrow: "M 92 248 L 92 196" }
+  },
+  {
+    id: "bridge",
+    title: "お尻上げ体操",
+    purpose: "お尻と太ももの裏の筋肉をきたえ、立つ・歩く姿勢を安定させます",
+    steps: [
+      "あおむけに寝て両ひざを立て、<b>足の裏をベッドにつけます</b>",
+      "お尻をゆっくり持ち上げ、<b>頭からひざまで一直線</b>になるくらいで<b>5秒</b>止めます",
+      "ゆっくりお尻を下ろします"
+    ],
+    reps: "10回",
+    cautions: [
+      "腰をそらしすぎないようにしましょう",
+      "息を止めずに行いましょう"
+    ],
+    lying: true,
+    start: { lie: "hook" },
+    end:   { lie: "bridge", moving: ["trunk"], arrow: "M 172 216 L 172 196" }
+  },
+  {
+    id: "bridge-leg",
+    title: "お尻上げ＋足上げ体操",
+    purpose: "お尻とおなかの筋肉をきたえ、片足で体を支えるバランス力をつけます",
+    steps: [
+      "「お尻上げ体操」でお尻を上げた姿勢になります",
+      "その姿勢のまま、右足を<b>5cmほど</b>持ち上げて<b>3秒</b>止めます",
+      "足を下ろしてから、お尻を下ろします（左足も同じように）"
+    ],
+    reps: "左右 5回ずつ",
+    cautions: [
+      "足を上げたときに、お尻が下がらないようにしましょう",
+      "腰に痛みが出たら中止しましょう"
+    ],
+    lying: true,
+    photos: { start: "bridge_end" },   // 開始の写真は「お尻上げ体操」の完了写真を使う
+    start: { lie: "bridge" },
+    end:   { lie: "bridgeLift", moving: ["nearLeg"], ghost: true, arrow: "M 312 214 L 312 186" }
   }
 ];
 
@@ -348,6 +393,50 @@ function figure(spec) {
   return s;
 }
 
+/* あおむけ（頭が左） */
+const LIE = {
+  shoulder: [90, 203], ankle: [274, 210],
+  hook:   { hip: [175, 203] },
+  bridge: { hip: [169.1, 172], knee: [234.3, 146.4] }
+};
+const BED = 220;
+function rot(p, c, deg) {
+  const a = rad(deg), dx = p[0] - c[0], dy = p[1] - c[1];
+  return [c[0] + dx * Math.cos(a) - dy * Math.sin(a), c[1] + dx * Math.sin(a) + dy * Math.cos(a)];
+}
+function lyingLeg(kind) {
+  const hip = kind === "hook" ? LIE.hook.hip : LIE.bridge.hip;
+  const knee = kind === "hook" ? ik(hip, LIE.ankle, L.thigh, L.shank, -1) : LIE.bridge.knee;
+  return { hip, knee, ankle: LIE.ankle, toe: [LIE.ankle[0] + L.foot, LIE.ankle[1]] };
+}
+function lyingFigure(spec) {
+  const mv = new Set(spec.moving || []);
+  const FAR = [-4, -6];
+  const shift = p => [p[0] + FAR[0], p[1] + FAR[1]];
+  const sh = LIE.shoulder;
+  const base = lyingLeg(spec.lie === "hook" ? "hook" : "bridge");
+  let near = base;
+  if (spec.lie === "bridgeLift") {
+    const r = p => rot(p, base.hip, -7);
+    near = { hip: base.hip, knee: r(base.knee), ankle: r(base.ankle), toe: r(base.toe) };
+  }
+  const far = { hip: shift(base.hip), knee: shift(base.knee), ankle: shift(base.ankle), toe: shift(base.toe) };
+  const hand = [150, 212], elbow = [120, 210];
+  let s = "";
+  s += seg(shift(sh), shift(elbow), W.upper, C.far) + seg(shift(elbow), shift(hand), W.fore, C.far);
+  s += drawLeg(far, C.far);
+  if (spec.ghost) s += `<g opacity=".55">${drawLeg(base, C.ghost)}</g>`;
+  s += seg(sh, base.hip, W.trunk, mv.has("trunk") ? C.move : C.near);
+  s += `<circle cx="56" cy="199" r="21" fill="${C.near}"/>`;
+  s += drawLeg(near, mv.has("nearLeg") ? C.move : C.near);
+  s += seg(sh, elbow, W.upper, C.near) + seg(elbow, hand, W.fore, C.near);
+  return s;
+}
+function bed() {
+  return `<rect x="22" y="${BED}" width="306" height="16" rx="4" fill="#d8c3a5"/>` +
+         seg([34, 240], [34, 280], 8, "#8b6a4f") + seg([316, 240], [316, 280], 8, "#8b6a4f");
+}
+
 function chair(type) {
   const col = "#8b6a4f", seat = "#a88464";
   if (type === "front") {   // 人の前に置いたいす（背もたれをつかむ）
@@ -364,6 +453,15 @@ function scene(ex, which) {
   const arrow = spec.arrow
     ? `<path d="${spec.arrow}" fill="none" stroke="${C.move}" stroke-width="6" stroke-linecap="round" marker-end="url(#ah)"/>`
     : "";
+  const defs = `<defs>
+      <marker id="ah" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="3.6" markerHeight="3.6" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" fill="${C.move}"/>
+      </marker>
+    </defs>`;
+  if (ex.lying) {
+    return `<svg viewBox="12 52 326 252" xmlns="http://www.w3.org/2000/svg" role="img">
+      ${defs}${bed()}${lyingFigure(spec)}${arrow}</svg>`;
+  }
   return `
   <svg viewBox="20 -62 280 328" xmlns="http://www.w3.org/2000/svg" role="img">
     <defs>
@@ -378,8 +476,8 @@ function scene(ex, which) {
   </svg>`;
 }
 
-function photo(i, which) {
-  const base = `photos/${String(i + 1).padStart(2, "0")}_${which}`;
+function photo(ex, which) {
+  const base = `photos/${(ex.photos && ex.photos[which]) || ex.id + "_" + which}`;
   return `<img class="photo" alt="" src="${base}.jpg"
     onload="this.parentNode.classList.add('has-photo')"
     onerror="if(!this.dataset.png){this.dataset.png=1;this.src='${base}.png'}else{this.remove()}">`;
@@ -387,14 +485,14 @@ function photo(i, which) {
 
 function page(ex, i) {
   return `
-  <section class="page">
+  <section class="page${ex.lying ? " wide" : ""}">
     <div class="title"><div class="no">${i + 1}</div><h1>${ex.title}</h1></div>
     <div class="purpose"><span class="label">目的</span><span>${ex.purpose}</span></div>
 
     <div class="figs">
-      <div class="fig"><div class="cap">はじめの姿勢</div>${photo(i, "start")}${scene(ex, "start")}</div>
+      <div class="fig"><div class="cap">はじめの姿勢</div>${photo(ex, "start")}${scene(ex, "start")}</div>
       <div class="between">▶</div>
-      <div class="fig"><div class="cap">動かした姿勢</div>${photo(i, "end")}${scene(ex, "end")}</div>
+      <div class="fig"><div class="cap">動かした姿勢</div>${photo(ex, "end")}${scene(ex, "end")}</div>
     </div>
 
     <div class="howto">
@@ -410,7 +508,9 @@ function page(ex, i) {
   </section>`;
 }
 
-document.getElementById("pages").innerHTML = EXERCISES.map(page).join("");
+const only = new URLSearchParams(location.search).get("ids");
+const LIST = only ? only.split(",").map(id => EXERCISES.find(e => e.id === id)).filter(Boolean) : EXERCISES;
+document.getElementById("pages").innerHTML = LIST.map(page).join("");
 </script>
 </body>
 </html>
