@@ -92,7 +92,18 @@
   .fig svg { width: 100%; height: auto; display: block; }
   .fig img.photo { display: none; width: 100%; aspect-ratio: 280 / 328; object-fit: cover; border-radius: 2mm; }
   .fig.has-photo img.photo { display: block; }
-  .page.wide .fig img.photo { aspect-ratio: 4 / 3; object-fit: contain; background: #fff; }
+  /* 寝て行う運動：横長の写真を上下に大きく並べる */
+  .page.wide .figs { grid-template-columns: 1fr; grid-template-rows: auto 6mm auto; margin-top: 3mm; }
+  .page.wide .between { font-size: 16pt; line-height: 6mm; transform: rotate(90deg); }
+  .page.wide .fig { position: relative; padding: 1.5mm; }
+  .page.wide .fig .cap {
+    position: absolute; left: 3mm; top: 3mm; z-index: 1; padding: 1mm 4mm;
+    background: var(--main); color: #fff; border-radius: 2mm; font-size: 15pt;
+  }
+  .page.wide .howto { margin-top: 3mm; }
+  .page.wide ol.steps li { margin: 1mm 0; }
+  .page.wide .fig img.photo { width: 80%; margin: 0 auto; aspect-ratio: 886 / 324; object-fit: contain; background: #fff; }
+  .page.wide .slot { aspect-ratio: 886 / 324; }
   /* 写真が届くまでの枠 */
   .slot {
     aspect-ratio: 4 / 3; border: 0.8mm dashed #9fb3c4; border-radius: 2mm; background: #f6f9fb;
@@ -260,8 +271,8 @@ const EXERCISES = [
     title: "お尻上げ体操",
     purpose: "お尻と太ももの裏の筋肉をきたえ、立つ・歩く姿勢を安定させます",
     steps: [
-      "あおむけに寝て両ひざを立て、<b>足の裏をベッドにつけます</b>",
-      "お尻をゆっくり持ち上げ、<b>頭からひざまで一直線</b>になるくらいで<b>5秒</b>止めます",
+      "あおむけで両ひざを立て、<b>足の裏をマットにつけます</b>",
+      "お尻を上げ、<b>頭からひざまで一直線</b>で<b>5秒</b>止めます",
       "ゆっくりお尻を下ろします"
     ],
     reps: "10回",
@@ -280,8 +291,8 @@ const EXERCISES = [
     purpose: "お尻とおなかの筋肉をきたえ、片足で体を支えるバランス力をつけます",
     steps: [
       "「お尻上げ体操」でお尻を上げた姿勢になります",
-      "その姿勢のまま、右足を<b>5cmほど</b>持ち上げて<b>3秒</b>止めます",
-      "足を下ろしてから、お尻を下ろします（左足も同じように）"
+      "そのまま右足を<b>5cmほど</b>上げ、<b>3秒</b>止めます",
+      "足を下ろし、お尻を下ろします（左足も同様に）"
     ],
     reps: "左右 5回ずつ",
     cautions: [
