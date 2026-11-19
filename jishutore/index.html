@@ -92,7 +92,16 @@
   .fig svg { width: 100%; height: auto; display: block; }
   .fig img.photo { display: none; width: 100%; aspect-ratio: 280 / 328; object-fit: cover; border-radius: 2mm; }
   .fig.has-photo img.photo { display: block; }
-  .page.wide .fig img.photo { aspect-ratio: 326 / 252; }
+  .page.wide .fig img.photo { aspect-ratio: 4 / 3; object-fit: contain; background: #fff; }
+  /* 写真が届くまでの枠 */
+  .slot {
+    aspect-ratio: 4 / 3; border: 0.8mm dashed #9fb3c4; border-radius: 2mm; background: #f6f9fb;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2mm;
+    color: #5d7486; text-align: center; padding: 3mm;
+  }
+  .slot .t { font-size: 15pt; font-weight: 700; word-break: auto-phrase; }
+  .slot .f { font-size: 10pt; font-family: monospace; }
+  .fig.has-photo .slot { display: none; }
   .fig.has-photo svg { display: none; }
   .between { text-align: center; color: var(--accent); font-size: 30pt; font-weight: 700; }
 
@@ -261,6 +270,7 @@ const EXERCISES = [
       "息を止めずに行いましょう"
     ],
     lying: true,
+    slots: { start: "あおむけ・ひざを立てる", end: "お尻を上げる（頭からひざまで一直線）" },
     start: { lie: "hook" },
     end:   { lie: "bridge", moving: ["trunk"], arrow: "M 172 216 L 172 196" }
   },
@@ -279,6 +289,7 @@ const EXERCISES = [
       "腰に痛みが出たら中止しましょう"
     ],
     lying: true,
+    slots: { start: "お尻を上げる（お尻上げ体操と同じ写真）", end: "お尻を上げたまま右足を5cm上げる" },
     photos: { start: "bridge_end" },   // 開始の写真は「お尻上げ体操」の完了写真を使う
     start: { lie: "bridge" },
     end:   { lie: "bridgeLift", moving: ["nearLeg"], ghost: true, arrow: "M 312 214 L 312 186" }
@@ -458,6 +469,10 @@ function scene(ex, which) {
         <path d="M0,0 L10,5 L0,10 z" fill="${C.move}"/>
       </marker>
     </defs>`;
+  if (ex.slots) {   // 写真待ちの枠を表示
+    const file = (ex.photos && ex.photos[which]) || ex.id + "_" + which;
+    return `<div class="slot"><div class="t">写真をここに入れます</div><div class="t">${ex.slots[which]}</div><div class="f">photos/${file}.jpg</div></div>`;
+  }
   if (ex.lying) {
     return `<svg viewBox="12 52 326 252" xmlns="http://www.w3.org/2000/svg" role="img">
       ${defs}${bed()}${lyingFigure(spec)}${arrow}</svg>`;
