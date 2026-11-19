@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>自主トレーニング資料</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  /* ===== 色の設定（ここを変えると全ページの色が変わります） ===== */
+  :root {
+    --main: #2f6f9f;        /* タイトル帯・見出しの色 */
+    --main-light: #e6f0f8;  /* 目的欄の背景 */
+    --accent: #e8743b;      /* 動かす部分・矢印の色 */
+    --caution: #fff4d6;     /* 注意欄の背景 */
+    --caution-line: #e0a400;
+    --text: #222;
+  }
+
+  @page { size: A4 portrait; margin: 0; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: #8a8f96;
+    color: var(--text);
+    font-family: "BIZ UDPGothic", "BIZ UDPゴシック", "Meiryo", "メイリオ", "Hiragino Sans", sans-serif;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .toolbar {
+    position: sticky; top: 0; z-index: 10;
+    background: #333; color: #fff; padding: 10px 16px;
+    display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
+    font-size: 15px;
+  }
+  .toolbar button {
+    font: inherit; font-weight: 700; padding: 6px 16px;
+    border: 0; border-radius: 6px; background: #fff; color: #333; cursor: pointer;
+  }
+
+  /* ===== A4 1ページ ===== */
+  .page {
+    width: 210mm; height: 297mm;
+    margin: 12mm auto; background: #fff;
+    box-shadow: 0 2px 12px rgba(0,0,0,.35);
+    padding: 12mm 13mm 10mm;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    page-break-after: always; break-after: page;
+  }
+
+  /* タイトル */
+  .title {
+    display: flex; align-items: center; gap: 5mm;
+    background: var(--main); color: #fff;
+    border-radius: 4mm; padding: 4mm 6mm;
+  }
+  .title .no {
+    flex: none; width: 17mm; height: 17mm; border-radius: 50%;
+    background: #fff; color: var(--main);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 30pt; font-weight: 700;
+  }
+  .title h1 { margin: 0; font-size: 36pt; font-weight: 700; letter-spacing: .05em; line-height: 1.15; }
+
+  /* 目的 */
+  .purpose {
+    margin-top: 4mm;
+    display: flex; align-items: center; gap: 4mm;
+    background: var(--main-light); border-radius: 3mm;
+    padding: 3.5mm 5mm;
+    font-size: 21pt; font-weight: 700; line-height: 1.4;
+  }
+  .label {
+    flex: none; font-size: 16pt; font-weight: 700;
+    background: var(--main); color: #fff;
+    padding: 1.5mm 4mm; border-radius: 2mm;
+  }
+
+  /* イラスト */
+  .figs {
+    margin-top: 5mm;
+    display: grid; grid-template-columns: 1fr 12mm 1fr; align-items: center;
+  }
+  .fig { border: 0.6mm solid #cfd8e0; border-radius: 3mm; padding: 2mm 2mm 1mm; text-align: center; }
+  .fig .cap {
+    font-size: 17pt; font-weight: 700; color: var(--main);
+    padding: 1mm 0 2mm;
+  }
+  .fig svg { width: 100%; height: auto; display: block; }
+  .between { text-align: center; color: var(--accent); font-size: 30pt; font-weight: 700; }
+
+  /* やり方 */
+  .howto { margin-top: 5mm; }
+  .sec-head { display: flex; align-items: center; gap: 4mm; margin-bottom: 2mm; }
+  .reps {
+    margin-left: auto; font-size: 20pt; font-weight: 700;
+    border: 0.8mm solid var(--accent); color: var(--accent);
+    border-radius: 3mm; padding: 1mm 5mm;
+  }
+  .purpose, ol.steps li, .caution li { word-break: auto-phrase; }
+  ol.steps { list-style: none; margin: 0; padding: 0; counter-reset: s; }
+  ol.steps li {
+    counter-increment: s;
+    position: relative; padding-left: 12mm;
+    font-size: 20pt; line-height: 1.45; margin: 2mm 0;
+  }
+  ol.steps li::before {
+    content: counter(s);
+    position: absolute; left: 0; top: 0.8mm;
+    width: 9mm; height: 9mm; border-radius: 50%;
+    background: var(--main); color: #fff;
+    font-size: 16pt; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  ol.steps b { color: var(--accent); }
+
+  /* 注意 */
+  .caution {
+    margin-top: auto;
+    background: var(--caution); border: 0.8mm solid var(--caution-line);
+    border-radius: 3mm; padding: 3mm 5mm;
+  }
+  .caution .label { background: var(--caution-line); }
+  .caution ul { margin: 2mm 0 0; padding: 0; list-style: none; }
+  .caution li {
+    font-size: 19pt; line-height: 1.45; padding-left: 8mm; position: relative; margin: 1mm 0;
+  }
+  .caution li::before { content: "！"; position: absolute; left: 0; color: #c0392b; font-weight: 700; }
+
+  .foot { margin-top: 3mm; display: flex; justify-content: space-between; font-size: 11pt; color: #666; }
+
+  @media print {
+    body { background: #fff; }
+    .toolbar { display: none; }
+    .page { margin: 0; box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+<div class="toolbar">
+  <button onclick="window.print()">印刷する</button>
+  <span>A4・縦／余白なし・「背景のグラフィック」をオンにして印刷してください</span>
+</div>
+<div id="pages"></div>
+
+<script>
+/* =====================================================================
+   運動データ
+   ここに1つ追加すると、A4が1ページ増えます。
+   start / end … イラストの姿勢（下の「人の絵の描き方」参照）
+   ===================================================================== */
+const FACILITY = "";   // 例: "○○デイサービス"（空欄なら表示しません）
+
+const EXERCISES = [
+  {
+    title: "ひざ伸ばし体操",
+    purpose: "太ももの前の筋肉をきたえ、立つ・歩く力をつけます",
+    steps: [
+      "いすに<b>浅く</b>すわり、座面のはしを持ちます",
+      "片方のひざをゆっくり伸ばし、<b>つま先を上</b>に向けて<b>5秒</b>止めます",
+      "ゆっくり元にもどします"
+    ],
+    reps: "左右 10回ずつ",
+    cautions: [
+      "息を止めず、声に出して数えましょう",
+      "ひざに痛みがあるときは無理をしないでください"
+    ],
+    chair: "seat",
+    start: { pose: "sit", moving: ["nearLeg"] },
+    end:   { pose: "sit", nearLeg: { thigh: -3, shank: 2, foot: -75 }, moving: ["nearLeg"],
+             ghost: { nearLeg: true },
+             arrow: "M 186 238 Q 236 232 246 196" }
+  },
+  {
+    title: "もも上げ体操",
+    purpose: "足を持ち上げる力をつけ、つまずきを防ぎます",
+    steps: [
+      "背すじを伸ばして、いすにすわります",
+      "片方の太ももをゆっくり持ち上げ、<b>3秒</b>止めます",
+      "ゆっくり元にもどします"
+    ],
+    reps: "左右 10回ずつ",
+    cautions: [
+      "背もたれに寄りかからないようにしましょう",
+      "体を後ろにたおさないようにしましょう"
+    ],
+    chair: "seat",
+    start: { pose: "sit", moving: ["nearLeg"] },
+    end:   { pose: "sit", nearLeg: { thigh: -28, shank: 88, foot: 0 }, moving: ["nearLeg"],
+             ghost: { nearLeg: true },
+             arrow: "M 214 236 Q 224 190 206 152" }
+  },
+  {
+    title: "立ち上がり体操",
+    purpose: "足腰の力をつけ、いすやトイレからの立ち上がりを楽にします",
+    steps: [
+      "足を少し手前に引き、肩はばに開きます",
+      "<b>おじぎ</b>をするように体を前にたおし、ゆっくり立ち上がります",
+      "ゆっくりすわります（ドスンとすわらない）"
+    ],
+    reps: "10回",
+    cautions: [
+      "キャスター（車輪）のない、安定したいすを使いましょう",
+      "ふらつく方は、机などにつかまって行いましょう"
+    ],
+    chair: "seat",
+    start: { pose: "sitLean", moving: [],
+             arrow: "M 178 34 Q 236 38 254 96" },
+    end:   { pose: "stand", moving: [],
+             arrow: "M 236 150 L 236 40" }
+  },
+  {
+    title: "かかと上げ体操",
+    purpose: "ふくらはぎをきたえ、歩く力とバランス力をつけます",
+    steps: [
+      "いすの<b>背もたれにつかまって</b>立ちます",
+      "かかとをゆっくり上げ、<b>2秒</b>止めます",
+      "ゆっくり下ろします"
+    ],
+    reps: "10回",
+    cautions: [
+      "必ず安定したものにつかまって行いましょう",
+      "ふらつくときは、すわって行いましょう"
+    ],
+    chair: "front",
+    start: { pose: "standHold", moving: ["feet"] },
+    end:   { pose: "standHoldUp", moving: ["feet"],
+             arrow: "M 92 248 L 92 196" }
+  }
+];
+
+/* =====================================================================
+   人の絵の描き方（横向き・右向き）
+   角度は「右＝0°、下＝90°、上＝-90°」
+   ===================================================================== */
+const L = { trunk: 85, thigh: 70, shank: 75, foot: 24, upper: 52, fore: 48 };
+const W = { trunk: 34, thigh: 24, shank: 20, foot: 13, upper: 16, fore: 14 };
+const C = { near: "#3b7dbf", far: "#a9c7e4", move: "var(--accent)", moveFar: "#f3b896", ghost: "#b9b9b9" };
+const GROUND = 258;
+
+const POSES = {
+  sit: {
+    hip: [110, 175], trunk: -90,
+    nearLeg: { thigh: 0, shank: 90, foot: 0 }, farLeg: { thigh: 0, shank: 90, foot: 0 },
+    hand: [128, 186]
+  },
+  sitLean: {
+    hip: [110, 175], trunk: -55,
+    nearLeg: { thigh: 2, shank: 100, foot: 0 }, farLeg: { thigh: 2, shank: 100, foot: 0 },
+    hand: "knee"
+  },
+  stand: {
+    hip: [162, 106], trunk: -88,
+    nearLeg: { thigh: 92, shank: 88, foot: 0 }, farLeg: { thigh: 92, shank: 88, foot: 0 },
+    hand: [170, 196]
+  },
+  standHold: {
+    hip: [110, 106], trunk: -84,
+    nearLeg: { thigh: 90, shank: 90, foot: 0 }, farLeg: { thigh: 90, shank: 90, foot: 0 },
+    hand: [204, 96]
+  },
+  standHoldUp: {
+    hip: [110, 89], trunk: -84,
+    nearLeg: { thigh: 90, shank: 90, foot: 41 }, farLeg: { thigh: 90, shank: 90, foot: 41 },
+    hand: [204, 96]
+  }
+};
+
+const rad = d => d * Math.PI / 180;
+const go = (p, len, deg) => [p[0] + len * Math.cos(rad(deg)), p[1] + len * Math.sin(rad(deg))];
+const f1 = n => Math.round(n * 10) / 10;
+
+function seg(a, b, w, color, extra = "") {
+  return `<line x1="${f1(a[0])}" y1="${f1(a[1])}" x2="${f1(b[0])}" y2="${f1(b[1])}" stroke="${color}" stroke-width="${w}" stroke-linecap="round" ${extra}/>`;
+}
+function ik(a, b, l1, l2, bend) {           // 2関節の位置合わせ（ひじ）
+  const dx = b[0] - a[0], dy = b[1] - a[1];
+  const d = Math.min(Math.hypot(dx, dy), l1 + l2 - 0.5);
+  const base = Math.atan2(dy, dx);
+  const off = Math.acos((l1 * l1 + d * d - l2 * l2) / (2 * l1 * d));
+  const ang = base + bend * off;
+  return [a[0] + l1 * Math.cos(ang), a[1] + l1 * Math.sin(ang)];
+}
+function legPts(hip, lg) {
+  const knee = go(hip, L.thigh, lg.thigh);
+  const ankle = go(knee, L.shank, lg.shank);
+  const toe = go(ankle, L.foot, lg.foot);
+  return { hip, knee, ankle, toe };
+}
+function drawLeg(p, color, extra = "") {
+  return seg(p.hip, p.knee, W.thigh, color, extra) + seg(p.knee, p.ankle, W.shank, color, extra) +
+         seg(p.ankle, p.toe, W.foot, color, extra);
+}
+
+function figure(spec) {
+  const base = POSES[spec.pose];
+  const o = { ...base, ...spec, nearLeg: spec.nearLeg || base.nearLeg, farLeg: spec.farLeg || base.farLeg };
+  const mv = new Set(spec.moving || []);
+  const FAR = [-9, -2];                        // 奥側の手足を少しずらす
+  const shift = (p) => [p[0] + FAR[0], p[1] + FAR[1]];
+
+  const hip = o.hip;
+  const shoulder = go(hip, L.trunk, o.trunk);
+  const head = go(shoulder, 36, o.trunk - 4);
+  const near = legPts(hip, o.nearLeg);
+  const far = legPts(shift(hip), o.farLeg);
+  const hand = o.hand === "knee" ? [near.knee[0] - 4, near.knee[1] - 8] : o.hand;
+  const elbow = ik(shoulder, hand, L.upper, L.fore, o.hand === "knee" ? 1 : -1);
+  const fShoulder = shift(shoulder), fHand = shift(hand);
+  const fElbow = ik(fShoulder, fHand, L.upper, L.fore, o.hand === "knee" ? 1 : -1);
+
+  const legMove = mv.has("nearLeg");
+  const footMove = mv.has("feet");
+  let s = "";
+  // 奥側の腕・脚
+  s += seg(fShoulder, fElbow, W.upper, C.far) + seg(fElbow, fHand, W.fore, C.far);
+  s += footMove
+    ? seg(far.hip, far.knee, W.thigh, C.far) + seg(far.knee, far.ankle, W.shank, C.far) + seg(far.ankle, far.toe, W.foot, C.moveFar)
+    : drawLeg(far, C.far);
+  // 動く前の位置（うすい点線）
+  if (spec.ghost && spec.ghost.nearLeg) {
+    const g = legPts(hip, POSES[spec.pose].nearLeg);
+    s += `<g opacity=".55">${drawLeg(g, "none", `stroke-dasharray="0"`).replace(/stroke="none"/g, `stroke="${C.ghost}"`)}</g>`;
+  }
+  // 体・頭
+  s += seg(hip, shoulder, W.trunk, mv.has("trunk") ? C.move : C.near);
+  s += `<circle cx="${f1(head[0])}" cy="${f1(head[1])}" r="21" fill="${C.near}"/>`;
+  // 手前の脚・腕
+  if (footMove) {
+    s += seg(near.hip, near.knee, W.thigh, C.near) + seg(near.knee, near.ankle, W.shank, C.near) +
+         seg(near.ankle, near.toe, W.foot, C.move);
+    s += `<circle cx="${f1(near.ankle[0])}" cy="${f1(near.ankle[1])}" r="9" fill="${C.move}"/>`;
+  } else {
+    s += drawLeg(near, legMove ? C.move : C.near);
+  }
+  s += seg(shoulder, elbow, W.upper, C.near) + seg(elbow, hand, W.fore, C.near);
+  return s;
+}
+
+function chair(type) {
+  const col = "#8b6a4f", seat = "#a88464";
+  if (type === "front") {   // 人の前に置いたいす（背もたれをつかむ）
+    return seg([206, 92], [206, 196], 9, col) + seg([206, 196], [278, 196], 10, seat) +
+           seg([210, 200], [210, GROUND], 7, col) + seg([272, 200], [272, GROUND], 7, col);
+  }
+  return seg([72, 96], [72, 192], 9, col) +                // 背もたれ
+         seg([68, 192], [150, 192], 10, seat) +            // 座面
+         seg([78, 198], [78, GROUND], 7, col) + seg([144, 198], [144, GROUND], 7, col);
+}
+
+function scene(ex, which) {
+  const spec = ex[which];
+  const arrow = spec.arrow
+    ? `<path d="${spec.arrow}" fill="none" stroke="${C.move}" stroke-width="6" stroke-linecap="round" marker-end="url(#ah)"/>`
+    : "";
+  return `
+  <svg viewBox="20 -62 280 328" xmlns="http://www.w3.org/2000/svg" role="img">
+    <defs>
+      <marker id="ah" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="3.6" markerHeight="3.6" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" fill="${C.move}"/>
+      </marker>
+    </defs>
+    <line x1="20" y1="${GROUND + 4}" x2="300" y2="${GROUND + 4}" stroke="#c9c9c9" stroke-width="4"/>
+    ${chair(ex.chair)}
+    ${figure(spec)}
+    ${arrow}
+  </svg>`;
+}
+
+function page(ex, i) {
+  return `
+  <section class="page">
+    <div class="title"><div class="no">${i + 1}</div><h1>${ex.title}</h1></div>
+    <div class="purpose"><span class="label">目的</span><span>${ex.purpose}</span></div>
+
+    <div class="figs">
+      <div class="fig"><div class="cap">はじめの姿勢</div>${scene(ex, "start")}</div>
+      <div class="between">▶</div>
+      <div class="fig"><div class="cap">動かした姿勢</div>${scene(ex, "end")}</div>
+    </div>
+
+    <div class="howto">
+      <div class="sec-head"><span class="label">やり方</span><span class="reps">${ex.reps}</span></div>
+      <ol class="steps">${ex.steps.map(t => `<li>${t}</li>`).join("")}</ol>
+    </div>
+
+    <div class="caution">
+      <span class="label">注意</span>
+      <ul>${ex.cautions.map(t => `<li>${t}</li>`).join("")}</ul>
+    </div>
+    <div class="foot"><span>痛みや体調の変化があれば、すぐに中止してください</span><span>${FACILITY}</span></div>
+  </section>`;
+}
+
+document.getElementById("pages").innerHTML = EXERCISES.map(page).join("");
+</script>
+</body>
+</html>
