@@ -90,6 +90,9 @@
     padding: 1mm 0 2mm;
   }
   .fig svg { width: 100%; height: auto; display: block; }
+  .fig img.photo { display: none; width: 100%; aspect-ratio: 280 / 328; object-fit: cover; border-radius: 2mm; }
+  .fig.has-photo img.photo { display: block; }
+  .fig.has-photo svg { display: none; }
   .between { text-align: center; color: var(--accent); font-size: 30pt; font-weight: 700; }
 
   /* やり方 */
@@ -151,6 +154,11 @@
    運動データ
    ここに1つ追加すると、A4が1ページ増えます。
    start / end … イラストの姿勢（下の「人の絵の描き方」参照）
+
+   ★写真に差し替えるとき
+   photos フォルダに「ページ番号_start.jpg」「ページ番号_end.jpg」を入れるだけで、
+   イラストの代わりに写真が表示されます（.png でも可）。
+   例）1ページ目 → photos/01_start.jpg と photos/01_end.jpg
    ===================================================================== */
 const FACILITY = "";   // 例: "○○デイサービス"（空欄なら表示しません）
 
@@ -370,6 +378,13 @@ function scene(ex, which) {
   </svg>`;
 }
 
+function photo(i, which) {
+  const base = `photos/${String(i + 1).padStart(2, "0")}_${which}`;
+  return `<img class="photo" alt="" src="${base}.jpg"
+    onload="this.parentNode.classList.add('has-photo')"
+    onerror="if(!this.dataset.png){this.dataset.png=1;this.src='${base}.png'}else{this.remove()}">`;
+}
+
 function page(ex, i) {
   return `
   <section class="page">
@@ -377,9 +392,9 @@ function page(ex, i) {
     <div class="purpose"><span class="label">目的</span><span>${ex.purpose}</span></div>
 
     <div class="figs">
-      <div class="fig"><div class="cap">はじめの姿勢</div>${scene(ex, "start")}</div>
+      <div class="fig"><div class="cap">はじめの姿勢</div>${photo(i, "start")}${scene(ex, "start")}</div>
       <div class="between">▶</div>
-      <div class="fig"><div class="cap">動かした姿勢</div>${scene(ex, "end")}</div>
+      <div class="fig"><div class="cap">動かした姿勢</div>${photo(i, "end")}${scene(ex, "end")}</div>
     </div>
 
     <div class="howto">
