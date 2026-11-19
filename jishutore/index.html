@@ -154,7 +154,8 @@
   }
   .caution li::before { content: "！"; position: absolute; left: 0; color: #c0392b; font-weight: 700; }
 
-  .foot { margin-top: 3mm; display: flex; justify-content: space-between; font-size: 11pt; color: #666; }
+  .foot { margin-top: 3mm; display: flex; justify-content: space-between; align-items: baseline; font-size: 11pt; color: #666; }
+  .foot .maker { font-size: 13pt; font-weight: 700; color: var(--main); }
 
   @media print {
     body { background: #fff; }
@@ -179,12 +180,12 @@
    ★写真に差し替えるとき
    photos フォルダに「id_start.jpg」「id_end.jpg」を入れるだけで、
    イラストの代わりに写真が表示されます（.png でも可）。
-   例）お尻上げ体操（id: "bridge"）→ photos/bridge_start.jpg と photos/bridge_end.jpg
+   例）お尻上げ運動（id: "bridge"）→ photos/bridge_start.jpg と photos/bridge_end.jpg
 
    ★一部のページだけ印刷するとき
    index.html?ids=bridge,bridge-leg のように id を並べて開きます。
    ===================================================================== */
-const FACILITY = "";   // 例: "○○デイサービス"（空欄なら表示しません）
+const FACILITY = "作成：リハビリサポート　nico";   // 例: "○○デイサービス"（空欄なら表示しません）
 
 const EXERCISES = [
   {
@@ -268,7 +269,7 @@ const EXERCISES = [
   },
   {
     id: "bridge",
-    title: "お尻上げ体操",
+    title: "お尻上げ運動",
     purpose: "お尻と太ももの裏の筋肉をきたえ、立つ・歩く姿勢を安定させます",
     steps: [
       "あおむけで両ひざを立て、<b>足の裏をマットにつけます</b>",
@@ -287,10 +288,10 @@ const EXERCISES = [
   },
   {
     id: "bridge-leg",
-    title: "お尻上げ＋足上げ体操",
+    title: "お尻上げ＋足上げ運動",
     purpose: "お尻とおなかの筋肉をきたえ、片足で体を支えるバランス力をつけます",
     steps: [
-      "「お尻上げ体操」でお尻を上げた姿勢になります",
+      "「お尻上げ運動」でお尻を上げた姿勢になります",
       "そのまま右足を<b>5cmほど</b>上げ、<b>3秒</b>止めます",
       "足を下ろし、お尻を下ろします（左足も同様に）"
     ],
@@ -300,8 +301,8 @@ const EXERCISES = [
       "腰に痛みが出たら中止しましょう"
     ],
     lying: true,
-    slots: { start: "お尻を上げる（お尻上げ体操と同じ写真）", end: "お尻を上げたまま右足を5cm上げる" },
-    photos: { start: "bridge_end" },   // 開始の写真は「お尻上げ体操」の完了写真を使う
+    slots: { start: "お尻を上げる（お尻上げ運動と同じ写真）", end: "お尻を上げたまま右足を5cm上げる" },
+    photos: { start: "bridge_end" },   // 開始の写真は「お尻上げ運動」の完了写真を使う
     start: { lie: "bridge" },
     end:   { lie: "bridgeLift", moving: ["nearLeg"], ghost: true, arrow: "M 312 214 L 312 186" }
   }
@@ -530,7 +531,7 @@ function page(ex, i) {
       <span class="label">注意</span>
       <ul>${ex.cautions.map(t => `<li>${t}</li>`).join("")}</ul>
     </div>
-    <div class="foot"><span>痛みや体調の変化があれば、すぐに中止してください</span><span>${FACILITY}</span></div>
+    <div class="foot"><span>痛みや体調の変化があれば、すぐに中止してください</span><span class="maker">${FACILITY}</span></div>
   </section>`;
 }
 
